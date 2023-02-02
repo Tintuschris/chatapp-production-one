@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Chat App</h1>
+  <form id="message-form">
+    <input type="text" id="message-input" placeholder="Enter a message">
+    <button type="submit">Send</button>
+  </form>
+  <ul id="message-list">
+  </ul>
+  <script>
+    const form = document.getElementById('message-form');
+    const input = document.getElementById('message-input');
+    const messageList = document.getElementById('message-list');
+  
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      fetch('http://localhost:3000/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: input.value })
+      }).then(() => {
+        input.value = '';
+      });
+    });
+  
+    setInterval(() => {
+      fetch('http://localhost:3000/messages')
+        .then((response) => response.json())
+        .then((messages) => {
+          messageList.innerHTML = '';
+          messages.forEach((message) => {
+            const li = document.createElement('li');
+            li.textContent = message.message;
+            messageList.appendChild(li);
+          });
+        });
+    }, 1000);
+  </script>
+</body>
+</html>

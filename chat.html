@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      #message-list {
+        height: 300px;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <textarea id="message-input"></textarea>
+      <button id="send-button">Send</button>
+    </div>
+    <div id="message-list">
+      <!-- messages will be inserted here -->
+    </div>
+    <script>
+      // Connect to the socket.io server
+      const socket = io();
+      
+      // Listen for the "message" event from the server
+      socket.on("message", (message) => {
+        // Add the message to the message list
+        $("#message-list").append(`<div>${message}</div>`);
+      });
+
+      // Send a message to the server when the "Send" button is clicked
+      $("#send-button").click(() => {
+        const message = $("#message-input").val();
+        socket.emit("message", message);
+        $("#message-input").val("");
+      });
+    </script>
+  </body>
+</html>
